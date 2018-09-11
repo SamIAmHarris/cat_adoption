@@ -1,4 +1,5 @@
 import 'package:cat_adoption/models/cat.dart';
+import 'package:cat_adoption/ui/cat_details/footer/details_footer.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'header/details_header.dart';
@@ -47,8 +48,8 @@ class _CatDetailsPageState extends State<CatDetailsPage> {
               Padding(
                 padding: const EdgeInsets.all(24.0),
                 child: CatDetailBody(widget.cat),
-              )
-              //todo cat showcase
+              ),
+              CatShowcase(widget.cat)
             ],
           ),
         ),
