@@ -24,7 +24,9 @@ class _CatListState extends State<CatList> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _loadCats();
+    if(_cats.length == 0) {
+      _loadCats();
+    }
   }
 
   _loadCats() async {
