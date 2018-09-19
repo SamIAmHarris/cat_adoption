@@ -12,28 +12,48 @@ class CatList extends StatefulWidget {
 
 class _CatListState extends State<CatList> {
   List<Cat> _cats = [];
+  CatApi _api;
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       backgroundColor: Colors.blue,
       body: _buildBody(),
+      floatingActionButton: FloatingActionButton(
+          onPressed: () {
+
+          },
+        tooltip: _api != null ? "Signed-in ${_api.firebaseUser.email}" : "Signed-out",
+        backgroundColor: Colors.blue,
+        child: Icon(
+          Icons.person
+        ),
+      ),
     );
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if(_cats.length == 0) {
-      _loadCats();
-    }
+  void initState() {
+    super.initState();
+    _loadFromFirebase();
   }
 
-  _loadCats() async {
-    String fileData = await DefaultAssetBundle.of(context).loadString("assets/cats.json");
+  _loadFromFirebase() async {
+    final api = await CatApi.signInWithEmail("Sam@ok.com", "samiam123");
+    final cats = await api.getAllCats();
     setState(() {
-      _cats = CatApi.allCatsFromJson(fileData);
+      _api = api;
+      _cats = cats;
     });
+  }
+
+  _reloadCats() async {
+    if (_api != null) {
+      final cats = await _api.getAllCats();
+      setState(() {
+        _cats = cats;
+      });
+    }
   }
 
   _navigateToCatDetails(Cat cat, Object avatarTag) {
@@ -53,7 +73,7 @@ class _CatListState extends State<CatList> {
       child: Column(
         children: <Widget>[
           _getAppTitleWidget(),
-          _getListViewWidget()
+          _getListViewWidget(),
         ],
       ),
     );
@@ -103,7 +123,7 @@ class _CatListState extends State<CatList> {
   }
 
   Future<Null> refresh() {
-   _loadCats();
+   _reloadCats();
    return Future<Null>.value();
   }
 
